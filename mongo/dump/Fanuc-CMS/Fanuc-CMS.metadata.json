@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"8934b1dd83ed42069b34104dba709512","collectionName":"Fanuc-CMS"}

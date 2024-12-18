@@ -1,0 +1,53 @@
+version: '3'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    stdin_open: true
+    ports:
+      - "1337:1337"
+      - "1338:1338"
+      - "4000:4000"
+      - "5000:5000"
+    volumes:
+      - ../backend:/var/www/backend
+      - ../frontend:/var/www/frontend
+      - ../fanuc-calculator-roi:/var/www/fanuc-calculator-roi
+      - ../fanuc-calculator-strapi:/var/www/fanuc-calculator-strapi
+      - ./start.sh:/var/www/start.sh
+    entrypoint: ""
+    command: "/var/www/start.sh"
+
+  mongo:
+    image: mongo:4.4.5
+    volumes:
+      - ./mongo/data:/data/db
+      - ./mongo/dump:/dump
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=fanuc-calculator-strapi
+    restart: unless-stopped
+    command:
+      - --bind_ip_all
+    ports:
+      - "27017:27017"
+
+  adminette:
+    image: dockette/adminer:full
+    restart: unless-stopped
+    ports:
+      - 8009:80
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: unless-stopped
+    logging:
+      driver: 'none'  # disable saving logs
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
